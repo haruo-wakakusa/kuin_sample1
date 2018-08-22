@@ -1,0 +1,35 @@
+const windowWidth: int :: 800
+const windowHeight: int :: 450
+
+const gridSize: int :: 50
+
+var grid: \grid@Grid
+
+func main()
+	var wnd: wnd@Wnd :: wnd@makeWnd(null, %aspect,
+	|@windowWidth, @windowHeight, "Title")
+	
+	var draw: wnd@Draw :: wnd@makeDraw(wnd, 0, 0,
+	|@windowWidth, @windowHeight, %scale, %scale, false)
+	
+	do @grid :: #\grid@Grid
+	do draw.onMouseDownL :: @onClick
+	
+	while(wnd@act())
+		do draw@rect(0.0, 0.0,
+		|@windowWidth $ float, @windowHeight $ float, 0xFFFFEEEE)
+		do @grid.forEach(@drawRect)
+		do draw@render(30)
+	end while
+end func
+
+func drawRect(row: int, col: int, grid: \grid@Grid): bool
+	do draw@rect(
+	|(row * @gridSize) $ float, (col * @gridSize) $ float,
+	|@gridSize $ float, @gridSize $ float, 0xFFFFCCCC)
+	ret true
+end func
+
+func onClick(wnd: wnd@WndBase, x: int, y: int)
+	do @grid.add(x / @gridSize, y / @gridSize)
+end func

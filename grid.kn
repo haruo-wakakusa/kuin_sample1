@@ -1,0 +1,44 @@
+; 内部クラス
+class Segment()
+	+var row: int
+	+var col: int
+	*func ctor()
+		do me.row :: 0
+		do me.col :: 0
+	end func
+	+*func cmp(t: Segment): int
+		if(me.row = t.row)
+			ret me.col - t.col
+		else
+			ret me.row - t.row
+		end if
+	end func
+end class
+
+enum Unit
+	unit
+end enum
+
+; 公開クラス
++class Grid()
+	var grid: dict<@Segment, @Unit>
+	*func ctor()
+		do me.grid :: #dict<@Segment, @Unit>
+	end func
+	+func add(row: int, col: int)
+		var seg: @Segment :: #@Segment
+		do seg.row :: row
+		do seg.col :: col
+		do me.grid.add(seg, %unit)
+	end func
+	+func forEach(f: func<(int, int, @Grid): bool>): bool
+		do @tmpF :: f
+		ret me.grid.forEach(@forEachDict, me)
+	end func
+end class
+
+var tmpF: func<(int, int, @Grid): bool>
+
+func forEachDict(seg: @Segment, unit: @Unit, grid: @Grid): bool
+	ret @tmpF(seg.row, seg.col, grid)
+end func
